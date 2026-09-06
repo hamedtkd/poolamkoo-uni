@@ -1,0 +1,49 @@
+# Device-to-device transfer
+
+پولم‌کو برای انتقال بین دو دستگاه به حساب کاربری یا فضای ذخیره‌سازی مرکزی نیاز ندارد.
+
+## روش مستقیم
+
+1. در دستگاه فعلی از Settings گزینه «انتقال به دستگاه جدید» را بزنید.
+2. کد اتصال تولیدشده را با دستگاه جدید Share/Copy کنید.
+3. در دستگاه جدید «دریافت از دستگاه قبلی» را باز کنید و کد را وارد کنید.
+4. دستگاه جدید یک کد پاسخ می‌سازد؛ آن را به دستگاه قبلی برگردانید.
+5. پس از اتصال WebRTC، دستگاه قبلی داده را می‌فرستد.
+6. دستگاه جدید رمز یک‌بارمصرف را وارد می‌کند، Preview را می‌بیند و Import را صریحاً تأیید می‌کند.
+
+## Privacy و Encryption
+
+- WebRTC DataChannel در مسیر انتقال از DTLS استفاده می‌کند.
+- Payload مالی علاوه بر کانال WebRTC با AES-GCM و رمز یک‌بارمصرف همان Session رمزنگاری می‌شود.
+- هیچ signaling server یا دیتابیس مرکزی برای این flow وجود ندارد؛ کدهای اتصال توسط خود کاربر بین دستگاه‌ها جابه‌جا می‌شوند.
+- برای بیشترین شانس اتصال، دو دستگاه روی یک شبکه محلی/Wi-Fi باشند.
+
+## Import semantics
+
+انتقال مستقیم Merge نمی‌کند؛ داده اصلی دستگاه مقصد را با داده مبدأ جایگزین می‌کند. این رفتار جلوی duplicate شدن تراکنش‌ها و شناسه‌های IndexedDB را می‌گیرد. قبل از جایگزینی، Recovery Snapshot محلی ساخته می‌شود و کاربر Preview تعداد رکوردها را می‌بیند.
+
+## Reliability
+
+- Payload به chunkهای محدود تقسیم می‌شود و progress نمایش داده می‌شود.
+- SHA-256 integrity check قبل از بازکردن بسته انجام می‌شود.
+- دستگاه مقصد پس از دریافت و پس از Import acknowledgement می‌فرستد.
+- اگر اتصال بعد از دریافت پاسخ در زمان مناسب شکل نگیرد، Session با خطای قابل فهم متوقف می‌شود و کاربر می‌تواند Retry کند.
+
+## Universal fallback
+
+اگر WebRTC روی شبکه یا مرورگر کار نکرد، Backup رمزنگاری‌شده همان صفحه Settings روش عمومی انتقال است: فایل را دانلود کنید، با ابزار دلخواه به دستگاه جدید ببرید و Restore کنید. این روش مستقل از WebRTC باقی می‌ماند.
+
+## سازگاری نسخه در v0.21
+
+از v0.21 فرستنده نسخه ساختار Local Database را داخل Metadata انتقال اعلام می‌کند. گیرنده قبل از بازکردن Import بررسی می‌کند که داده از Schema جدیدتری نیامده باشد؛ اگر نسخه فرستنده جلوتر باشد، انتقال قبل از جایگزینی داده متوقف می‌شود و کاربر باید دستگاه قدیمی‌تر را به‌روزرسانی کند.
+
+Envelope رمزنگاری‌شده داخل WebRTC عمداً روی فرمت v1 باقی مانده تا مسیر انتقال مستقیم با نسخه‌های قبلی تا حد ممکن سازگار بماند. صحت کل متن انتقال همچنان با SHA-256 بیرونی و اصالت Payload رمزدار با AES-GCM بررسی می‌شود. این تصمیم مستقل از فایل Backup v2 است که برای ذخیره‌سازی بلندمدت Metadata بیشتری دارد.
+
+
+## Schema 7 market identity compatibility (v0.34)
+
+The transfer protocol/encrypted envelope remains unchanged. A sender still announces `schemaVersion` in the metadata frame, and the receiver rejects future schemas before import. When schema 6 or older payloads are accepted by a schema 7 client, legacy market-linked assets/watchlist/alerts that lack an explicit provider are normalized to Tindex before IndexedDB persistence. Explicit TSETMC identities remain unchanged.
+
+## Schema 8 fund-ledger compatibility (v0.38)
+
+The direct-transfer protocol and encrypted v1 transfer envelope are unchanged. Current senders announce schema 8. A schema-8 receiver still accepts older compatible payloads; when `fundMovements` is absent, each positive legacy `fund.currentToman` is normalized to one local `opening` movement with source `migration` before persistence. Payloads that already contain a ledger must pass chronological non-negative and final-balance validation. Future schemas are still rejected before import, and the receiver continues to create a Recovery Snapshot before replacing local data.

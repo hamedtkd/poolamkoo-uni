@@ -1,0 +1,78 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { AppTopbar } from "@/components/app/app-topbar";
+import { DesktopSidebar } from "@/components/app/desktop-sidebar";
+import { GlobalSearch } from "@/components/app/global-search";
+import type { MarketRefreshControls } from "@/components/app/market-refresh-button";
+import { MobileNavigation } from "@/components/app/mobile-navigation";
+import { ProductTour } from "@/components/app/product-tour";
+import { NetworkStatusBanner } from "@/components/system/network-status-banner";
+import { useAppTheme } from "@/hooks/use-app-theme";
+import { useSidebarState } from "@/hooks/use-sidebar-state";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import type { AppSettings } from "@/lib/types";
+import { cn } from "@/lib/utils";
+
+export function AppShell({ settings, market, onNewMoney, children }: {
+  settings: AppSettings;
+  market?: MarketRefreshControls | null;
+  onNewMoney: () => void;
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const { resolvedTheme, toggleTheme } = useAppTheme(settings);
+  const sidebar = useSidebarState();
+  const compactDesktop = useMediaQuery("(min-width: 768px) and (max-width: 1279px)");
+  const effectiveCollapsed = sidebar.collapsed || compactDesktop;
+  const startTour = () => window.dispatchEvent(new Event("poolamkoo:start-tour"));
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      const typing = target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.isContentEditable;
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setSearchOpen(true);
+      } else if (!typing && event.key === "/") {
+        event.preventDefault();
+        setSearchOpen(true);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  return (
+    <div className={cn("app-mobile-safe-bottom min-h-svh", settings.hideFinancialData && "privacy-hidden")}>
+      <a href="#app-main" className="skip-link">رفتن به محتوای اصلی</a>
+      <DesktopSidebar pathname={pathname} collapsed={effectiveCollapsed} onToggleCollapsed={sidebar.toggle} onNewMoney={onNewMoney} lockCollapsed={compactDesktop} />
+      <MobileNavigation
+        pathname={pathname}
+        market={market}
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+        onOpenSearch={() => setSearchOpen(true)}
+        onNewMoney={onNewMoney}
+        onStartTour={startTour}
+        resolvedTheme={resolvedTheme}
+        onToggleTheme={toggleTheme}
+        hideFinancialData={settings.hideFinancialData}
+      />
+
+      <main id="app-main" className={cn("min-w-0 overflow-x-clip transition-[margin] duration-300 ease-out", effectiveCollapsed ? "md:mr-[64px]" : "md:mr-64")}>
+        <div className="mx-auto w-full max-w-[1920px] p-3 sm:p-5 lg:p-7 2xl:p-8">
+          <AppTopbar market={market} onOpenSearch={() => setSearchOpen(true)} onStartTour={startTour} resolvedTheme={resolvedTheme} onToggleTheme={toggleTheme} hideFinancialData={settings.hideFinancialData} />
+          <NetworkStatusBanner />
+          <div data-route-content={pathname} className="min-w-0 pb-3 sm:pb-4 md:pb-0">{children}</div>
+        </div>
+      </main>
+
+      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} onNewMoney={onNewMoney} />
+      <ProductTour guideComplete={settings.guideComplete} />
+    </div>
+  );
+}

@@ -1,0 +1,122 @@
+# مستندات پولم‌کو
+
+این پوشه مرجع فنی و محصولی پولم‌کو است.
+
+## مسیر مستندات
+
+- `architecture/` معماری Local-First، بازار، داده و UI
+- `audits/` ممیزی‌های Release-readiness و مرزهای قبل از نسخه‌های اصلی
+- `releases/` تاریخچه نسخه‌ها و تغییرات
+- `testing/` تست، کنترل کیفیت و انتشار
+- `backlog/` آزمایش‌های متوقف‌شده و ایده‌های نگه‌داری‌شده
+- `ROADMAP.md` نقشه راه محصول و اولویت فازهای بعدی
+
+## فلسفه محصول
+
+پولم‌کو حسابداری روزانه نیست. هدف آن کمک به تصمیم‌گیری برای پول جدید است:
+
+پول وارد شد → برنامه ساخته شد → اجرا ثبت شد → نتیجه تحلیل شد.
+
+## اصول ثابت
+
+- Local-First
+- Privacy by design
+- PWA mobile-first
+- RTL-first
+- shadcn/ui + PersianLabs patterns
+- بدون داده ساختگی بازار
+
+## نقشه راه
+
+- [Roadmap](./ROADMAP.md)
+- [Background Push backlog](./backlog/background-push.md)
+
+## v1 readiness
+- [v1.0.1 public launch readiness](./audits/v1.0.1-launch-readiness.md)
+- [v1.0.0 stable acceptance record](./audits/v1.0.0-acceptance.md)
+- [v1.0.0-rc.3 acceptance matrix](./audits/v1-rc3-acceptance.md)
+- [v1.0.0-rc.2 acceptance matrix](./audits/v1-rc2-acceptance.md)
+- [v1.0.0-rc.1 acceptance matrix](./audits/v1-rc1-acceptance.md)
+- [v0.43 readiness audit](./audits/v1-readiness-v0.43.md)
+
+## Data safety
+- [مدل ماندگاری داده و Backup](./data-safety.md)
+
+## Analytics
+- [Cloudflare Web Analytics و مرزهای داده](./analytics.md)
+
+## Release history
+
+- [v1.1.1 — Investment queue UX & GitHub showcase](./releases/1.1.1.md)
+
+- [v1.1.0 — Searchable settings architecture](./releases/1.1.0.md)
+
+- [v1.0.2 — Brand mark & PWA identity refresh](./releases/1.0.2.md)
+
+- [v1.0.1 — Public launch & quota hardening](./releases/1.0.1.md)
+- [v1.0.0 — First stable release](./releases/1.0.0.md)
+- [v1.0.0-rc.3 — Product-tour masked spotlight stabilization](./releases/1.0.0-rc.3.md)
+- [v1.0.0-rc.2 — Product tour release-blocker fix](./releases/1.0.0-rc.2.md)
+- [v1.0.0-rc.1 — Release candidate validation](./releases/1.0.0-rc.1.md)
+- [v0.43.0 — v1.0 readiness hardening](./releases/0.43.0.md)
+- [v0.42.0 — Reports & reconciliation upgrade](./releases/0.42.0.md)
+- [v0.41.0 — Unified financial activity history](./releases/0.41.0.md)
+- [v0.40.0 — Local data health & consistency audit](./releases/0.40.0.md)
+- [v0.39.0 — Income correction & money-flow integrity](./releases/0.39.0.md)
+- [v0.38.0 — Fund movement ledger & correction safety](./releases/0.38.0.md)
+- [v0.37.0 — Safe asset archive lifecycle](./releases/0.37.0.md)
+- [v0.36.0 — Investment transaction correction & ledger integrity](./releases/0.36.0.md)
+- [v0.35.0 — Verified schema migration release gate](./releases/0.35.0.md)
+- [v0.34.0 — Persisted provider-scoped market identity](./releases/0.34.0.md)
+- [v0.33.0 — Portfolio quote identity & decision safety](./releases/0.33.0.md)
+- [v0.32.0 — Market fallback continuity & freshness](./releases/0.32.0.md)
+- [v0.31.0 — Market transparency & privacy-safe diagnostics](./releases/0.31.0.md)
+- [v0.30.0 — Market provider production reliability](./releases/0.30.0.md)
+- [v0.29.0 — Privacy-safe report export & mobile UX refinement](./releases/0.29.0.md)
+- [v0.28.2 — Turbopack animation resolver & modal safety](./releases/0.28.2.md)
+- [v0.28.1 — Hybrid motion restoration](./releases/0.28.1.md)
+
+- [v0.28.0](./releases/0.28.0.md)
+- [v0.27.4](./releases/0.27.4.md)
+- [v0.27.3](./releases/0.27.3.md)
+- [v0.27.2](./releases/0.27.2.md)
+- [v0.27.1](./releases/0.27.1.md)
+- [v0.27.0](./releases/0.27.0.md)
+- [v0.26.1](./releases/0.26.1.md)
+- [v0.26.0](./releases/0.26.0.md)
+- [v0.25.0](./releases/0.25.0.md)
+- [v0.24.1](./releases/0.24.1.md)
+- [v0.24.0](./releases/0.24.0.md)
+- [v0.23.0](./releases/0.23.0.md)
+- [v0.22.0](./releases/0.22.0.md)
+- [v0.21.0](./releases/0.21.0.md)
+- [v0.20.0](./releases/0.20.0.md)
+- [v0.19.2](./releases/0.19.2.md)
+- [v0.19.1](./releases/0.19.1.md)
+- [v0.19.0](./releases/0.19.0.md)
+- [v0.18.0](./releases/0.18.0.md)
+- [v0.17.0](./releases/0.17.0.md)
+- [v0.16.0](./releases/0.16.0.md)
+- [v0.14.0](./releases/0.14.0.md)
+- [v0.15.0](./releases/0.15.0.md)
+- [v0.15.1](./releases/0.15.1.md)
+- [v0.13.1](./releases/0.13.1.md)
+- [v0.13.0](./releases/0.13.0.md)
+- [v0.12.0](./releases/0.12.0.md)
+- [v0.11.0](./releases/0.11.0.md)
+- [v0.10.0](./releases/0.10.0.md)
+- [v0.9.2](./releases/0.9.2.md)
+- [v0.9.1](./releases/0.9.1.md)
+- [v0.9.0](./releases/0.9.0.md)
+- [v0.8.1](./releases/0.8.1.md)
+- [v0.8.0](./releases/0.8.0.md)
+- [v0.7.0](./releases/0.7.0.md)
+- [v0.6.0](./releases/0.6.0.md)
+- [v0.5.2](./releases/0.5.2.md)
+- [v0.5.1](./releases/0.5.1.md)
+- [v0.5.0](./releases/0.5.0.md)
+- [v0.4.0](./releases/0.4.0.md)
+- [v0.3.2](./releases/0.3.2.md)
+- [v0.3.1](./releases/0.3.1.md)
+- [v0.3.0](./releases/0.3.0.md)
+- [v0.2.x](./releases/0.2.x.md)

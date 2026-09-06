@@ -18,10 +18,10 @@ This branch adds the server-side account requirement requested for the universit
 
 ```env
 SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
+SUPABASE_SECRET_KEY=sb_secret_YOUR_SERVER_SECRET
 ```
 
-Never prefix the service role key with `NEXT_PUBLIC_` and never expose it to client components.
+Use the current Supabase server-only `sb_secret_...` key. Never prefix it with `NEXT_PUBLIC_` and never expose it to client components. The code still accepts the legacy `SUPABASE_SERVICE_ROLE_KEY` JWT as a compatibility fallback.
 
 ## Local database isolation
 

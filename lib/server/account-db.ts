@@ -25,22 +25,35 @@ export class AccountDatabaseError extends Error {
 
 function config() {
   const baseUrl = process.env.SUPABASE_URL?.replace(/\/$/, "");
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!baseUrl || !serviceKey) {
+  // Prefer Supabase's current server-only secret key. Keep the legacy
+  // service_role JWT as a temporary compatibility fallback.
+  const secretKey = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!baseUrl || !secretKey) {
     throw new AccountDatabaseError("پایگاه داده حساب‌های کاربری هنوز تنظیم نشده است.");
   }
-  return { baseUrl, serviceKey };
+  return { baseUrl, secretKey };
 }
 
 export function isAccountDatabaseConfigured() {
-  return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+  return Boolean(
+    process.env.SUPABASE_URL
+      && (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY),
+  );
+}
+
+function isLegacyJwtKey(key: string) {
+  return key.split(".").length === 3;
 }
 
 async function requestRows<T>(path: string, init?: RequestInit) {
-  const { baseUrl, serviceKey } = config();
+  const { baseUrl, secretKey } = config();
   const headers = new Headers(init?.headers);
-  headers.set("apikey", serviceKey);
-  headers.set("Authorization", `Bearer ${serviceKey}`);
+  headers.set("apikey", secretKey);
+  // New sb_secret_* keys are opaque API keys, not JWTs. Only legacy
+  // service_role JWTs belong in the Authorization Bearer header.
+  if (isLegacyJwtKey(secretKey)) {
+    headers.set("Authorization", `Bearer ${secretKey}`);
+  }
   headers.set("Content-Type", "application/json");
   const response = await fetch(`${baseUrl}/rest/v1/${path}`, {
     ...init,

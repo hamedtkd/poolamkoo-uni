@@ -25,9 +25,25 @@ test("financial IndexedDB is isolated by account scope", () => {
   assert.equal(scope.includes("`${LEGACY_DATABASE_NAME}-${scope.replace"), true);
 });
 
-test("service role secret remains server-only", () => {
+test("Supabase server secret remains server-only", () => {
   const serverDb = read("lib/server/account-db.ts");
   const env = read(".env.example");
+  assert.match(serverDb, /SUPABASE_SECRET_KEY/);
   assert.match(serverDb, /SUPABASE_SERVICE_ROLE_KEY/);
+  assert.doesNotMatch(env, /NEXT_PUBLIC_SUPABASE_SECRET_KEY/);
   assert.doesNotMatch(env, /NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY/);
+});
+
+test("new Supabase secret keys are sent as API keys, not fake bearer JWTs", () => {
+  const serverDb = read("lib/server/account-db.ts");
+  assert.match(serverDb, /headers\.set\("apikey", secretKey\)/);
+  assert.match(serverDb, /if \(isLegacyJwtKey\(secretKey\)\)/);
+});
+
+test("academic tables explicitly grant only the server Data API role", () => {
+  const sql = read("supabase/academic-auth.sql");
+  assert.match(sql, /grant select, insert, update, delete on table public\.app_users to service_role/i);
+  assert.match(sql, /grant select, insert, update, delete on table public\.app_sessions to service_role/i);
+  assert.match(sql, /revoke all on table public\.app_users from anon, authenticated/i);
+  assert.match(sql, /revoke all on table public\.app_sessions from anon, authenticated/i);
 });

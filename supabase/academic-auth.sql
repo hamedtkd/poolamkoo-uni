@@ -26,5 +26,13 @@ create index if not exists app_sessions_expires_at_idx on public.app_sessions(ex
 alter table public.app_users enable row level security;
 alter table public.app_sessions enable row level security;
 
--- No anon/authenticated RLS policies are created. These tables are accessed only by
--- Next.js server routes using SUPABASE_SERVICE_ROLE_KEY, which must never reach the browser.
+-- The app uses Supabase's Data API only from trusted Next.js server routes.
+-- New Supabase projects may no longer grant Data API privileges automatically,
+-- so make the server-only service_role grant explicit while keeping browser roles out.
+revoke all on table public.app_users from anon, authenticated;
+revoke all on table public.app_sessions from anon, authenticated;
+grant select, insert, update, delete on table public.app_users to service_role;
+grant select, insert, update, delete on table public.app_sessions to service_role;
+
+-- No anon/authenticated RLS policies are created. The server uses SUPABASE_SECRET_KEY
+-- (or the legacy SUPABASE_SERVICE_ROLE_KEY fallback), neither of which may reach the browser.

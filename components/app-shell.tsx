@@ -12,13 +12,15 @@ import { NetworkStatusBanner } from "@/components/system/network-status-banner";
 import { useAppTheme } from "@/hooks/use-app-theme";
 import { useSidebarState } from "@/hooks/use-sidebar-state";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import type { AccountUser } from "@/lib/server/account-types";
 import type { AppSettings } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export function AppShell({ settings, market, onNewMoney, children }: {
+export function AppShell({ settings, market, onNewMoney, account, children }: {
   settings: AppSettings;
   market?: MarketRefreshControls | null;
   onNewMoney: () => void;
+  account: AccountUser;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -49,7 +51,7 @@ export function AppShell({ settings, market, onNewMoney, children }: {
   return (
     <div className={cn("app-mobile-safe-bottom min-h-svh", settings.hideFinancialData && "privacy-hidden")}>
       <a href="#app-main" className="skip-link">رفتن به محتوای اصلی</a>
-      <DesktopSidebar pathname={pathname} collapsed={effectiveCollapsed} onToggleCollapsed={sidebar.toggle} onNewMoney={onNewMoney} lockCollapsed={compactDesktop} />
+      <DesktopSidebar pathname={pathname} collapsed={effectiveCollapsed} onToggleCollapsed={sidebar.toggle} onNewMoney={onNewMoney} account={account} lockCollapsed={compactDesktop} />
       <MobileNavigation
         pathname={pathname}
         market={market}

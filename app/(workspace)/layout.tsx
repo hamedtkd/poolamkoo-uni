@@ -12,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
-  if (!await getCurrentAccount()) redirect("/login");
-  return <><AppRouteLayout>{children}</AppRouteLayout><PwaUpdateNotice /></>;
+  const account = await getCurrentAccount();
+  if (!account) redirect("/login");
+  return <><AppRouteLayout account={account}>{children}</AppRouteLayout><PwaUpdateNotice /></>;
 }

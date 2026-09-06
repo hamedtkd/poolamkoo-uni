@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RiArrowLeftLine, RiLockPasswordLine, RiMailLine, RiUser3Line } from "react-icons/ri";
+import { PasswordInput } from "@/components/account/password-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -43,7 +44,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   return <form onSubmit={submit} className="space-y-4">
     {register && <Field icon={<RiUser3Line />} label="نام نمایشی"><Input name="displayName" autoComplete="name" required minLength={2} maxLength={80} placeholder="مثلاً حامد احمدی" /></Field>}
     <Field icon={<RiMailLine />} label="ایمیل"><Input name="email" type="email" dir="ltr" autoComplete="email" required placeholder="you@example.com" className="text-left" /></Field>
-    <Field icon={<RiLockPasswordLine />} label="رمز عبور"><Input name="password" type="password" dir="ltr" autoComplete={register ? "new-password" : "current-password"} required minLength={8} maxLength={128} className="text-left" /></Field>
+    <Field icon={<RiLockPasswordLine />} label="رمز عبور"><PasswordInput name="password" dir="ltr" autoComplete={register ? "new-password" : "current-password"} required minLength={8} maxLength={128} inputClassName="text-left" /></Field>
     {error && <p role="alert" className="rounded-xl border border-destructive/20 bg-destructive/5 px-3 py-2 text-sm leading-6 text-destructive">{error}</p>}
     <Button type="submit" size="lg" className="w-full" disabled={pending}>{pending ? "در حال انجام…" : register ? "ساخت حساب" : "ورود به پولم‌کو"}<RiArrowLeftLine /></Button>
     <p className="text-center text-sm text-muted-foreground">{register ? "قبلاً حساب ساخته‌ای؟" : "حساب نداری؟"} <Link className="text-primary hover:underline" href={register ? "/login" : "/register"}>{register ? "وارد شو" : "حساب بساز"}</Link></p>

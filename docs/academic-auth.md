@@ -4,10 +4,10 @@ This branch adds the server-side account requirement requested for the universit
 
 ## Architecture
 
-- **Server database (Supabase PostgreSQL):** user id, email, display name, password hash, sessions.
+- **Server database (Supabase PostgreSQL):** user id, email, editable display name, password hash, sessions.
 - **Browser IndexedDB:** incomes, allocations, funds, investments, transactions, reports and other financial records.
 - The raw session token is kept only in an HttpOnly cookie; the server database stores only its SHA-256 hash.
-- Passwords are stored as Node.js `scrypt` hashes with a random salt.
+- Passwords are stored as Node.js `scrypt` hashes with a random salt. Password changes require the current password before a new hash is written.
 - A non-secret `poolamkoo_scope` cookie contains only the account id so the browser can isolate IndexedDB per account.
 
 ## Set up the account database
@@ -28,6 +28,13 @@ Use the current Supabase server-only `sb_secret_...` key. Never prefix it with `
 The first account used on an existing browser becomes the owner of the legacy `poolyar-local` IndexedDB so an existing user's data is not made to disappear after enabling accounts. Additional accounts receive their own `poolyar-local-<account-id>` database.
 
 This means multiple accounts on the same browser do not share financial records, while existing local-first data remains available to the first account that adopts the browser profile.
+
+## Account UI
+
+- Desktop navigation keeps the active account at the bottom of the sidebar.
+- The account popover exposes profile management, display-name editing, password change, GitHub and logout actions.
+- Login, registration and password-change fields include an explicit show/hide password control.
+- `/account` remains the full account-management page and is also reachable from the mobile menu.
 
 ## Demo checklist
 

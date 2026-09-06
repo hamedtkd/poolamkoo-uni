@@ -5,7 +5,6 @@ import {
   RiHome5Line,
   RiSafe2Line,
   RiSettings3Line,
-  RiUser3Line,
   RiWallet3Line,
 } from "react-icons/ri";
 
@@ -17,7 +16,6 @@ export const appNav = [
   { href: "/activity", label: "تاریخچه", shortLabel: "تاریخچه", icon: RiHistoryLine, tour: "activity" },
   { href: "/reports", label: "گزارش‌ها", shortLabel: "گزارش", icon: RiBarChartBoxLine, tour: "reports" },
   { href: "/settings", label: "تنظیمات", shortLabel: "تنظیمات", icon: RiSettings3Line, tour: "settings" },
-  { href: "/account", label: "حساب کاربری", shortLabel: "حساب", icon: RiUser3Line, tour: "account" },
 ] as const;
 
 // Mobile keeps the four highest-frequency money flows visible; activity/reports/settings stay one tap away in More.

@@ -17,8 +17,9 @@ import { useCommunitySupport } from "@/hooks/use-community-support";
 import { useMarket } from "@/hooks/use-market";
 import { useMarketAlerts } from "@/hooks/use-market-alerts";
 import { portfolioRelevantAssets } from "@/lib/asset-lifecycle";
+import type { AccountUser } from "@/lib/server/account-types";
 
-export function AppRouteLayout({ children }: { children: React.ReactNode }) {
+export function AppRouteLayout({ children, account }: { children: React.ReactNode; account: AccountUser }) {
   const [newMoneyOpen, setNewMoneyOpen] = useState(false);
   const data = useAppData();
   const marketAssets = portfolioRelevantAssets(data.allAssets, data.transactions);
@@ -45,7 +46,7 @@ export function AppRouteLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <AppRuntimeProvider value={{ data, market, dateFilter, backgroundPush, backupSafety }}>
-      <AppShell settings={data.settings} market={market} onNewMoney={() => setNewMoneyOpen(true)}>{children}</AppShell>
+      <AppShell settings={data.settings} market={market} onNewMoney={() => setNewMoneyOpen(true)} account={account}>{children}</AppShell>
       <BackupReminder backup={backupSafety} />
       <SupportPrompt support={communitySupport} />
       <NewMoneyDialog

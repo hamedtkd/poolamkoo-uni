@@ -4,16 +4,18 @@ import Link from "next/link";
 import { RiAddLine, RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri";
 import { appNav, isAppNavActive } from "@/components/app/navigation";
 import { BrandLogo } from "@/components/brand-logo";
-import { SidebarCommunity } from "@/components/community/sidebar-community";
+import { SidebarAccountMenu } from "@/components/account/sidebar-account-menu";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import type { AccountUser } from "@/lib/server/account-types";
 import { cn } from "@/lib/utils";
 
-export function DesktopSidebar({ pathname, collapsed, onToggleCollapsed, onNewMoney, lockCollapsed = false }: {
+export function DesktopSidebar({ pathname, collapsed, onToggleCollapsed, onNewMoney, account, lockCollapsed = false }: {
   pathname: string;
   collapsed: boolean;
   onToggleCollapsed: () => void;
   onNewMoney: () => void;
+  account: AccountUser;
   lockCollapsed?: boolean;
 }) {
   const active = (href: string) => isAppNavActive(pathname, href);
@@ -46,7 +48,7 @@ export function DesktopSidebar({ pathname, collapsed, onToggleCollapsed, onNewMo
           return <SidebarTip key={item.href} label={item.label} enabled={collapsed}>{link}</SidebarTip>;
         })}
       </nav>
-      <SidebarCommunity collapsed={collapsed} />
+      <SidebarAccountMenu account={account} collapsed={collapsed} />
     </aside>
   );
 }

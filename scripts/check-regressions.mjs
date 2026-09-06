@@ -27,6 +27,7 @@ const [
 ]);
 
 const workspaceLoadingSource = await read("app/(workspace)/loading.tsx");
+const sidebarAccountSource = await read("components/account/sidebar-account-menu.tsx");
 const githubStatsSource = await read("hooks/use-github-stats.ts");
 const marketReliabilitySource = await read("lib/market/reliability.ts");
 const marketQuotaSource = await read("lib/market/quota.ts");
@@ -174,9 +175,9 @@ const [deviceTransferHookSource, deviceTransferCardSource, deviceTransferHelperS
   read("lib/device-transfer.ts"), read("hooks/use-backup-safety.ts"),
 ]);
 
-const [communitySource, communityHookSource, supportPromptSource, sidebarCommunitySource, githubStatsApiSource, privacyPageSource, aboutPageSource, guidePageSource, securityPageSource, licensePageSource, openSourceCardSource] = await Promise.all([
+const [communitySource, communityHookSource, supportPromptSource, githubStatsApiSource, privacyPageSource, aboutPageSource, guidePageSource, securityPageSource, licensePageSource, openSourceCardSource] = await Promise.all([
   read("lib/community.ts"), read("hooks/use-community-support.ts"), read("components/community/support-prompt.tsx"),
-  read("components/community/sidebar-community.tsx"), read("app/api/github/stats/route.ts"), read("app/(public)/privacy/page.tsx"),
+  read("app/api/github/stats/route.ts"), read("app/(public)/privacy/page.tsx"),
   read("app/(public)/about/page.tsx"), read("app/(public)/guide/page.tsx"), read("app/(public)/security/page.tsx"),
   read("app/(public)/license/page.tsx"), read("components/community/open-source-card.tsx"),
 ]);
@@ -281,9 +282,9 @@ const checks = [
   [gitattributesSource.includes("* text=auto eol=lf"), "Repository text files must keep deterministic LF line endings across Windows and Unix"],
   [communitySource.includes("SUPPORT_PROMPT_ACTIVE_DAYS = 7") && communitySource.includes("SUPPORT_PROMPT_SNOOZE_DAYS = 60") && communitySource.includes("SUPPORT_PROMPT_THANKS_DAYS = 180") && communityHookSource.includes("withUsageDay"), "Community support prompt must require seven distinct active days and use long local cooldowns"],
   [supportPromptSource.includes("ستاره در GitHub") && supportPromptSource.includes("حمایت اختیاری") && supportPromptSource.includes('pathname === "/dashboard"'), "Support prompt must stay gentle, optional, and dashboard-only"],
-  [githubStatsApiSource.includes("api.github.com/repos/hamedtkd/poolamkoo") && githubStatsApiSource.includes("revalidate: 21_600") && sidebarCommunitySource.includes("RiStarFill"), "GitHub entry must use a cached public star count without requiring a client token"],
+  [githubStatsApiSource.includes("api.github.com/repos/hamedtkd/poolamkoo") && githubStatsApiSource.includes("revalidate: 21_600") && sidebarAccountSource.includes("RiStarFill"), "GitHub entry must use a cached public star count without requiring a client token"],
   [privacyPageSource.includes("IndexedDB") && privacyPageSource.includes("Analytics اختیاری و بدون داده مالی") && privacyPageSource.includes("WebRTC") && aboutPageSource.includes("متن‌باز") && guidePageSource.includes("بکاپ") && securityPageSource.includes("Secretهای سرور") && licensePageSource.includes("مجوز MIT"), "Public trust pages must explain local-first privacy, security, licensing, and backup reality"],
-  [desktopSidebar.includes("SidebarCommunity") && mobileNavigation.includes("GithubLink") && settingsRouteContentSource.includes("OpenSourceCard") && openSourceCardSource.includes("/privacy"), "Open-source, guide, privacy and GitHub surfaces must be reachable from desktop, mobile and settings"],
+  [desktopSidebar.includes("SidebarAccountMenu") && sidebarAccountSource.includes("COMMUNITY_LINKS.repository") && mobileNavigation.includes("GithubLink") && settingsRouteContentSource.includes("OpenSourceCard") && openSourceCardSource.includes("/privacy"), "Open-source, guide, privacy and GitHub surfaces must be reachable from desktop, mobile and settings"],
   [onboardingSource.includes('href="/privacy"'), "Privacy policy must be reachable before onboarding is complete"],
   [db.includes('this.version(6).stores(storesV6)') && db.includes('this.version(7).stores(storesV7)') && db.includes('this.version(LOCAL_DATABASE_SCHEMA_VERSION).stores(storesV8)') && appVersionSource.includes('LOCAL_DATABASE_SCHEMA_VERSION = 8') && dbSchemaSource.includes('fundMovements: "++id, fundId, type, source, happenedAt, createdAt"') && db.includes('legacyFundOpeningMovement') && db.includes('recoverySnapshots') && db.includes('appMeta'), "Data safety schema must preserve v6/v7 history while adding the schema 8 fund movement ledger in place"],
   [fundLedgerSource.includes("reviewFundLedger") && fundLedgerSource.includes("legacyFundOpeningMovement") && fundLedgerSource.includes("assertPortableFundLedger") && fundLedgerSource.includes("normalizePortableFundLedger"), "Fund movement ledger must own chronological balance validation plus legacy/portable normalization"],

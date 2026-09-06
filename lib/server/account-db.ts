@@ -25,8 +25,6 @@ export class AccountDatabaseError extends Error {
 
 function config() {
   const baseUrl = process.env.SUPABASE_URL?.replace(/\/$/, "");
-  // Prefer Supabase's current server-only secret key. Keep the legacy
-  // service_role JWT as a temporary compatibility fallback.
   const secretKey = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!baseUrl || !secretKey) {
     throw new AccountDatabaseError("پایگاه داده حساب‌های کاربری هنوز تنظیم نشده است.");
@@ -49,11 +47,7 @@ async function requestRows<T>(path: string, init?: RequestInit) {
   const { baseUrl, secretKey } = config();
   const headers = new Headers(init?.headers);
   headers.set("apikey", secretKey);
-  // New sb_secret_* keys are opaque API keys, not JWTs. Only legacy
-  // service_role JWTs belong in the Authorization Bearer header.
-  if (isLegacyJwtKey(secretKey)) {
-    headers.set("Authorization", `Bearer ${secretKey}`);
-  }
+  if (isLegacyJwtKey(secretKey)) headers.set("Authorization", `Bearer ${secretKey}`);
   headers.set("Content-Type", "application/json");
   const response = await fetch(`${baseUrl}/rest/v1/${path}`, {
     ...init,
@@ -81,6 +75,10 @@ function mapUser(row: DbUserRow): AccountUserRecord {
   };
 }
 
+function publicUser(user: AccountUserRecord): AccountUser {
+  return { id: user.id, email: user.email, displayName: user.displayName, createdAt: user.createdAt };
+}
+
 function mapSession(row: DbSessionRow): AccountSessionRecord {
   return {
     id: row.id,
@@ -91,17 +89,23 @@ function mapSession(row: DbSessionRow): AccountSessionRecord {
   };
 }
 
+const USER_SELECT = "id,email,display_name,password_hash,created_at";
+
 export async function findUserByEmail(email: string) {
-  const query = new URLSearchParams({ email: `eq.${email}`, select: "id,email,display_name,password_hash,created_at", limit: "1" });
+  const query = new URLSearchParams({ email: `eq.${email}`, select: USER_SELECT, limit: "1" });
+  const rows = await requestRows<DbUserRow>(`app_users?${query}`);
+  return rows[0] ? mapUser(rows[0]) : null;
+}
+
+export async function findUserRecordById(id: string) {
+  const query = new URLSearchParams({ id: `eq.${id}`, select: USER_SELECT, limit: "1" });
   const rows = await requestRows<DbUserRow>(`app_users?${query}`);
   return rows[0] ? mapUser(rows[0]) : null;
 }
 
 export async function findUserById(id: string): Promise<AccountUser | null> {
-  const query = new URLSearchParams({ id: `eq.${id}`, select: "id,email,display_name,password_hash,created_at", limit: "1" });
-  const rows = await requestRows<DbUserRow>(`app_users?${query}`);
-  const row = rows[0];
-  return row ? mapUser(row) : null;
+  const user = await findUserRecordById(id);
+  return user ? publicUser(user) : null;
 }
 
 export async function insertUser(input: { email: string; displayName: string | null; passwordHash: string }) {
@@ -112,6 +116,28 @@ export async function insertUser(input: { email: string; displayName: string | n
   });
   if (!rows[0]) throw new AccountDatabaseError("ساخت حساب کاربری کامل نشد.");
   return mapUser(rows[0]);
+}
+
+export async function updateUserDisplayName(userId: string, displayName: string) {
+  const query = new URLSearchParams({ id: `eq.${userId}`, select: USER_SELECT });
+  const rows = await requestRows<DbUserRow>(`app_users?${query}`, {
+    method: "PATCH",
+    headers: { Prefer: "return=representation" },
+    body: JSON.stringify({ display_name: displayName }),
+  });
+  if (!rows[0]) throw new AccountDatabaseError("ویرایش حساب کاربری کامل نشد.");
+  return publicUser(mapUser(rows[0]));
+}
+
+export async function updateUserPasswordHash(userId: string, passwordHash: string) {
+  const query = new URLSearchParams({ id: `eq.${userId}`, select: USER_SELECT });
+  const rows = await requestRows<DbUserRow>(`app_users?${query}`, {
+    method: "PATCH",
+    headers: { Prefer: "return=representation" },
+    body: JSON.stringify({ password_hash: passwordHash }),
+  });
+  if (!rows[0]) throw new AccountDatabaseError("تغییر رمز عبور کامل نشد.");
+  return publicUser(mapUser(rows[0]));
 }
 
 export async function insertSession(input: { userId: string; tokenHash: string; expiresAt: string }) {

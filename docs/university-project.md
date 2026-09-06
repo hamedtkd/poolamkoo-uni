@@ -8,7 +8,7 @@
 | --- | --- |
 | Web application | Next.js / React responsive PWA |
 | Small server database | Supabase PostgreSQL tables `app_users` and `app_sessions` |
-| Multiple user accounts | Register, login, logout and independent account identities |
+| Multiple user accounts | Register, login, logout, editable profiles/passwords and independent account identities |
 | Add / edit / delete records | Financial records in IndexedDB (income, funds, transactions, plans, assets) |
 | Search and filters | Global search, investment/fund/activity filtering and date ranges |
 | Queries | IndexedDB/Dexie queries for financial data plus server queries for user/session identity |
@@ -47,7 +47,7 @@ The design intentionally avoids uploading financial records to the account datab
 
 ## Demo flow
 
-1. Register two different accounts.
+1. Register two different accounts and demonstrate editing the display name and changing a password.
 2. Log in as the first account and enter sample financial data.
 3. Log out and log in as the second account; verify the first user's local records are not visible.
 4. Show create/edit/delete/search/report workflows.

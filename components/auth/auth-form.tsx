@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { RiArrowLeftLine, RiLockPasswordLine, RiMailLine, RiUser3Line } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
+  const router = useRouter();
   const register = mode === "register";
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
@@ -30,7 +32,8 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
       });
       const body = await response.json().catch(() => ({})) as { error?: string };
       if (!response.ok) throw new Error(body.error || "عملیات حساب کاربری انجام نشد.");
-      window.location.assign("/dashboard");
+      router.replace("/dashboard");
+      router.refresh();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "عملیات حساب کاربری انجام نشد.");
       setPending(false);

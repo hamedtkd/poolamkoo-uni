@@ -120,3 +120,6 @@
 - [v0.3.1](./releases/0.3.1.md)
 - [v0.3.0](./releases/0.3.0.md)
 - [v0.2.x](./releases/0.2.x.md)
+
+## University edition
+- [Offline workspace and purchase-level investment analytics](./university-v7-offline-investment-analytics.md)

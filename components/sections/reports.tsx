@@ -8,6 +8,7 @@ import { Reveal, RevealGrid } from "@/components/animation/reveal";
 import { AllocationDonut } from "@/components/charts/allocation-donut";
 import { LazyMonthlyBars } from "@/components/charts/lazy-monthly-bars";
 import { DecisionInsightsCard } from "@/components/reports/decision-insights-card";
+import { InvestmentAnalyticsDashboard } from "@/components/reports/investment-analytics-dashboard";
 import { ReportExportDialog } from "@/components/reports/report-export-dialog";
 import { ReconciliationCard } from "@/components/reports/reconciliation-card";
 import { Badge } from "@/components/ui/badge";
@@ -71,6 +72,7 @@ export function ReportsSection({ settings, rule, incomes, allocations, funds, fu
 
     <Reveal step={7}><DecisionInsightsCard snapshot={decision} unit={settings.displayUnit} /></Reveal>
     <Reveal step={7}><ReconciliationCard snapshot={reconciliation} unit={settings.displayUnit} /></Reveal>
+    <Reveal step={7}><InvestmentAnalyticsDashboard settings={settings} assets={assets} transactions={transactions} quotes={quotes} /></Reveal>
 
     <div className="grid gap-4 lg:grid-cols-2">
       <Reveal step={7} className="h-full"><Card><CardHeader><CardTitle><HelpLabel label="تقسیم واقعی پول ثبت‌شده" help={HELP.allocation} /></CardTitle></CardHeader><CardContent className="grid gap-5 sm:grid-cols-[220px_1fr] sm:items-center"><div className="grid place-items-center"><AllocationDonut segments={allocationSegments(decision.allocatedTotal, totals)} /></div><div className="grid gap-2"><Legend color="var(--chart-3)" label="زندگی" value={allocationValue(decision.allocatedTotal, totals.life)} /><Legend color="var(--chart-2)" label="امنیت" value={allocationValue(decision.allocatedTotal, totals.safety)} /><Legend color="var(--chart-1)" label="رشد" value={allocationValue(decision.allocatedTotal, totals.growth)} /></div></CardContent></Card></Reveal>

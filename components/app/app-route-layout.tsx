@@ -9,6 +9,7 @@ import { NewMoneyDialog } from "@/components/new-money-dialog";
 import { Onboarding } from "@/components/onboarding";
 import { FullAppSkeleton } from "@/components/skeletons/page-skeleton";
 import { LocalDataUnavailable } from "@/components/system/local-data-unavailable";
+import { OfflineWorkspaceManager } from "@/components/system/offline-workspace-manager";
 import { useAppData } from "@/hooks/use-app-data";
 import { useAppDateFilter } from "@/hooks/use-app-date-filter";
 import { useBackgroundPush } from "@/hooks/use-background-push";
@@ -46,6 +47,7 @@ export function AppRouteLayout({ children, account }: { children: React.ReactNod
 
   return (
     <AppRuntimeProvider value={{ data, market, dateFilter, backgroundPush, backupSafety }}>
+      <OfflineWorkspaceManager account={account} />
       <AppShell settings={data.settings} market={market} onNewMoney={() => setNewMoneyOpen(true)} account={account}>{children}</AppShell>
       <BackupReminder backup={backupSafety} />
       <SupportPrompt support={communitySupport} />

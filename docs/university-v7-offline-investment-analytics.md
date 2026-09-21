@@ -5,6 +5,9 @@ This university-only upgrade focuses on the two requested areas: keeping the loc
 ## Included
 
 - Account-scoped offline workspace cache for the primary financial pages.
+- Service-worker updates prepare a complete account-scoped workspace before activation when an active account scope is available, so an app update does not replace a working offline shell with a partial one.
+- Offline readiness is verified from the active worker cache instead of trusting a session-only marker; missing routes are repaired automatically when the network returns.
+- Offline navigation uses cached documents directly, including `/income?plan=...`, to avoid uncached Next.js route-data requests after an online-to-offline transition.
 - Local income/fund/investment/report data remains usable from IndexedDB while offline.
 - Market fetches are skipped while the browser is offline; cached snapshots may still be shown as stale data.
 - Missing market prices no longer create a fake current value or open profit/loss.
